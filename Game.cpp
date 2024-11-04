@@ -2,7 +2,7 @@
 #include <regex>
 #include <random> //Allows the random fuction
 #include <algorithm>
-#include <memory>
+#include <memory> //Namespace to allow the manipulation of memory
 #include <cctype>
 #include <deque>
 #include <map> //Is a way to map data/ is a Dictionary
@@ -20,6 +20,12 @@ template<typename T, std::size_t size>
 constexpr std::size_t count(const T(&)[size])
 {
     return size;
+}
+
+//This is a syntactic shorthand for regular expressions
+static std::regex operator ""_r(const char* pattern, std::size_t length)
+{
+    return std::regex(pattern, length);
 }
 
 
@@ -40,9 +46,17 @@ MoneyTypes[] =
 EnvTypes[] =
 { {"arctic", 0,0},{"aquatic", 0,0}, {"forest", 0,0}, {"underground", 0,0} };
 
+bool isRunning;
 int main()
 {
     std::cout << "Hello World!\n";
+
+    //The main loop
+    while (isRunning)
+    {
+
+    }
+    
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
