@@ -9,7 +9,9 @@
 #include <set>
 #include <print>
 #include "Actor.hpp"
-
+#include <Windows.h>
+#include <conio.h>
+#include <stdio.h>
 
 static std::mt19937 rnd;
 
@@ -93,13 +95,48 @@ struct Dungeon
 } static dungeon;
 
 //Keeping track of the Player's location and life
-static long x = 0, y = 0;
+static long x = 0, y = 0, life = 100;
+Actor* player;
 
 bool isRunning;
+static bool CanMoveTo(long wherex, long wherey, const Room& model = defaultroom)
+{
+    if (!dungeon.GenerateRoom(wherex, wherey, model, 0).Wall) return true;
+    return false;
+}
+static Room& SpawnRooms(long wherex, long wherey, const Room& model = defaultroom)
+{
+    Room& room = dungeon.GenerateRoom(wherex, wherey, model, 0);
+#define Spawn4rooms(x,y)
+    for (char p : {1, 3, 5, 7}) \
+        dungeon.GenerateRoom(x + p % 3 - 1, y + p % 3 - 1, room, (p + 1) / 2)
+    Spawn4rooms(wherex, wherey);
+    for (int o = 1; o < 5 && CanMoveTo(wherex, wherey + o, room); o++) Spawn4rooms(wherex, wherey + o);
+    for (int o = 1; o < 5 && CanMoveTo(wherex, wherey - o, room); o++) Spawn4rooms(wherex, wherey - o);
+    for (int o = 1; o < 6 && CanMoveTo(wherex-o, wherey, room); o++) Spawn4rooms(wherex-o, wherey);
+    for (int o = 1; o < 6 && CanMoveTo(wherex+o, wherey, room); o++) Spawn4rooms(wherex+o, wherey);
+    return room;
+}
 
+//Routine provides view for the player and generates new dungeon data
 static void Look()
 {
+    const Room& room = SpawnRooms(x, y);
 
+    std::vector<std::string> mapgraph;
+    for (long yo = -4; yo <= 4; yo++)
+    {
+        std::string line;
+        for (long xo = -5; xo <= 5; xo++)
+        {
+            char c = ((xo == 0 && yo == 0) ? '@' : dungeon.Char(player->x + xo, player->y + yo));
+            line += c;
+        }
+        //Rendering the line of characters and storing them
+        //Once made, push to the back of the list
+        mapgraph.push_back(line);
+
+    }
 }
 static bool TryMoveBy(int xd, int yd)
 {
@@ -108,11 +145,37 @@ static bool TryMoveBy(int xd, int yd)
 int main()
 {
     std::cout << "Hello World!\n";
-
+    player = new Actor(0, 0, '@', 15);
+    isRunning = true;
+    Look();
     //The main loop
     while (isRunning)
     {
 
+
+        //if (GetKeyState('A') & 0x8000)
+        if (_kbhit())
+        {
+            char keyPressed = _getch();
+            //Check if the Key is pressed and if the high-order bit is set
+            switch (keyPressed)
+            {
+            case 'a':
+                //Move to the Left
+                std::cout << "Moving left" << std::endl;
+                break;
+            case 'd':
+                //Move to the Right
+                break;
+            case 'w':
+                //Move up
+                break;
+            case 's':
+                //Move down
+                break;
+            default:break;
+            }
+        }
     }
     
 }

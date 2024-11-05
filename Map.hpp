@@ -1,7 +1,7 @@
 #pragma once
 
 struct Tile {
-	bool canWalk;
+	bool canWalk; //Can actors walk on this tile
 	Tile() : canWalk(true) {}
 };
 class Map
@@ -14,6 +14,6 @@ public:
 	void render() const;
 protected:
 	Tile* tiles;
-	void setWall(int x, int y);
+	void SetWall(int x, int y);
 };
 
