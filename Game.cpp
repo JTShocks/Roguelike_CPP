@@ -8,6 +8,8 @@
 #include <map> //Is a way to map data/ is a Dictionary
 #include <set>
 #include <print>
+#include "Actor.hpp"
+
 
 static std::mt19937 rnd;
 
@@ -92,7 +94,17 @@ struct Dungeon
 
 //Keeping track of the Player's location and life
 static long x = 0, y = 0;
+
 bool isRunning;
+
+static void Look()
+{
+
+}
+static bool TryMoveBy(int xd, int yd)
+{
+
+}
 int main()
 {
     std::cout << "Hello World!\n";
