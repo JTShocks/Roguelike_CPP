@@ -46,6 +46,52 @@ MoneyTypes[] =
 EnvTypes[] =
 { {"arctic", 0,0},{"aquatic", 0,0}, {"forest", 0,0}, {"underground", 0,0} };
 
+struct Room
+{
+    std::size_t Wall = 0, Env = 0; //These are indexes for the kind of environment the room is
+    unsigned seed = 0; //Seed for the dungeon generation
+
+} static const defaultroom;
+struct Dungeon
+{
+    /*A dungeon contains rooms*/
+    std::map<long/*x*/, std::map<long/*y*/, Room>> rooms;
+
+    //Generate a room at the given coordinates
+    //The model room will help the dungeon create similar rooms, rather than completely random rooms of the different types
+    Room& GenerateRoom(long x, long y, const Room& model, unsigned seed)
+    {
+        rnd.seed(y * 0xc70f7907UL + x * 216613621UL);
+        auto insres = rooms[x].insert({ y, model });
+        Room& room = insres.first->second;
+        if (insres.second)
+        {
+            //If a new room was inserted, make changes
+            room.seed = (seed + (frand() > 0.95 ? rand(4) : 0)) & 3;
+            //10% chance for the room environment type to change.
+            if (frand() > 0.9)
+            {
+                room.Env = rand(count(EnvTypes));
+            }
+            if (frand() > (seed == model.seed ? 0.95 : 0.1))
+                room.Wall = frand() < 0.4 ? 2 : 0;
+        }
+            return room;
+    }
+    char Char(long x, long y) const
+    {
+        //This is what determines the display of a given room
+        auto i = rooms.find(x); 
+        if (i == rooms.end())    return ' '; //Blank space, reached the end of the row
+        auto j = i->second.find(y);
+        if (j == i->second.end()) return ' '; //Blank space, reached the end of the column
+        if (j->second.Wall)    return '#'; //# to represent a solid wall
+        return '.'; // a . to represent solid ground
+    }
+} static dungeon;
+
+//Keeping track of the Player's location and life
+static long x = 0, y = 0;
 bool isRunning;
 int main()
 {
