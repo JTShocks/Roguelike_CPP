@@ -56,5 +56,11 @@
     <ClInclude Include="CharacterClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="statblock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stattypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

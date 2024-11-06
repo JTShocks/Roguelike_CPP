@@ -1,9 +1,11 @@
 #pragma once
 #include "Health.h"
-class Fighter : public Health {
+#include "statblock.h"
+class Fighter : public Health , public StatBlock{
 public:
-	static const hpType CLASSHP = 10u;
-	Fighter() : Health(CLASSHP, CLASSHP) {
+	static const hpType CLASSHP = (hpType)10u;
+	static const statType CLASSBOOST = (statType)2u;
+	Fighter() : Health(CLASSHP, CLASSHP), StatBlock() {
 
 	};
 
